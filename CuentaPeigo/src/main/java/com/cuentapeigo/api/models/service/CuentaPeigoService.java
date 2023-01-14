@@ -3,6 +3,7 @@ package com.cuentapeigo.api.models.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,8 @@ public class CuentaPeigoService implements ICuentaPeigoService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public CuentaPeigo findById(Long id) {
-		return repository.findById(id).orElse(null);
+	public CuentaPeigo findById(String numeroCuenta) {
+		return repository.findById(numeroCuenta).orElse(null);
 	}
 
 	@Override
@@ -32,11 +33,17 @@ public class CuentaPeigoService implements ICuentaPeigoService{
 	public CuentaPeigo save(CuentaPeigo cuentaPeigo) {
 		return repository.save(cuentaPeigo);
 	}
+	
+	/*@Override
+	@Transactional
+	public CuentaPeigo findByCuenta(String cuenta) {
+		return repository.findByNumeroCuenta(cuenta);
+	}*/
 
 	@Override
 	@Transactional
-	public void deleteById(Long id) {
-		repository.deleteById(id);
+	public void deleteById(String numeroCuenta) {
+		repository.deleteById(numeroCuenta);
 	}
 
 }

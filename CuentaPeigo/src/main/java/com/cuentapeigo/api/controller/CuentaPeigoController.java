@@ -36,6 +36,22 @@ public class CuentaPeigoController {
 		return service.findAll();
 	}
 	
+	@GetMapping("/cuentas/{numeroCuenta}")
+	public ResponseEntity<?> consultarNumeroCuenta(@PathVariable("numeroCuenta") String numeroCuenta){
+		Map<String, Object> response = new HashMap<>();
+		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
+		
+		if(cuentaObj == null) {
+			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
+			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.NOT_FOUND);
+		}
+		
+		response.put("mensaje", "Consulta realizada con exito.");
+		response.put("cuenta", cuentaObj);
+		
+		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
+	}
+	
 	@PostMapping("/cuentas")
 	public ResponseEntity<?> guardarCuenta(@Valid @RequestBody CuentaPeigo cuentas, BindingResult result){
 		CuentaPeigo cuentasObj = null;
@@ -61,11 +77,11 @@ public class CuentaPeigoController {
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
 	}
 	
-	@PutMapping("/cuentas/{id}")
-	public ResponseEntity<?> actualizarCuenta(@Valid @RequestBody CuentaPeigo cuenta, BindingResult result, @PathVariable Long id){
+	@PutMapping("/cuentas/{numeroCuenta}")
+	public ResponseEntity<?> actualizarCuenta(@Valid @RequestBody CuentaPeigo cuenta, BindingResult result, @PathVariable String numeroCuenta){
 		CuentaPeigo cuentaFinal = null;
 		Map<String, Object> response = new HashMap<>();
-		CuentaPeigo cuentaObj = service.findById(id);
+		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
 		
 		if(result.hasErrors()) {
 			List<String> resultError = result.getFieldErrors().stream().map(r-> "El campo '"+r.getField()+"' "+r.getDefaultMessage()).collect(Collectors.toList());
@@ -74,7 +90,7 @@ public class CuentaPeigoController {
 		}
 		
 		if(cuentaObj == null) {
-			response.put("mensaje", "No existe la cuenta con el id "+id);
+			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
 			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.NOT_FOUND);
 		}
 		
@@ -95,16 +111,16 @@ public class CuentaPeigoController {
 		}
 		
 		response.put("mensaje", "Cliente actualizado con exito.");
-		response.put("cliente", cuentaFinal);
+		response.put("cuenta", cuentaFinal);
 		
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/cuentas/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable Long id){
+	@DeleteMapping("/cuentas/{numeroCuenta}")
+	public ResponseEntity<?> eliminar(@PathVariable String numeroCuenta){
 		Map<String, Object> response = new HashMap<>();
 		try {
-			service.deleteById(id);
+			service.deleteById(numeroCuenta);
 		} catch (DataAccessException e) {
 			response.put("error", e.getMostSpecificCause().getMessage());
 			response.put("mensaje", "Se produjo un error en la aplicacion");

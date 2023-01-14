@@ -24,13 +24,14 @@ import lombok.NoArgsConstructor;
 @Entity
 public class CuentaPeigo implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	//@Id
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//private Long id;
 	
+	@Id
 	@Pattern(regexp = "[0-9]+",message = "Solo permite valores numericos")
 	@NotEmpty(message = "El campo no puede ser vacio")
-	@Column(unique=true, name="numcuenta")
+	@Column(unique=true, name="numeroCuenta")
 	private String numeroCuenta;
 	
 	@NotEmpty(message = "El campo no puede ser vacio")
@@ -47,5 +48,5 @@ public class CuentaPeigo implements Serializable {
 	@Column(name = "estado")
 	private String estado;
 	
-	private static final long serialVersionUID = 4334455564095195932L;
+	//private static final long serialVersionUID = 4334455564095195932L;
 }
