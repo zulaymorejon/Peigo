@@ -88,5 +88,13 @@ public class CuentaPeigoController {
 		logger.info("prueba operacion de la consulta"+ operacion.getCuentaDestino().toString());
 		return transaccion;
 	}
+	
+	
+	@GetMapping(path = "/hello")
+	public String holaMundo(){
+		
+		return "Hola mundo";
+	}
+	
 
 }

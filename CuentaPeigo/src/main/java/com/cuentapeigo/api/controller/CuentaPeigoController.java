@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,13 +40,10 @@ public class CuentaPeigoController {
 		return service.findAll();
 	}
 	
-	@GetMapping("/cuentas2/{numeroCuenta}")
-	public CuentaPeigo consultarNumeroCuenta2(@PathVariable("numeroCuenta") String numeroCuenta){
+	@GetMapping("/cuentas/{numeroCuenta}")
+	public CuentaPeigo consultarNumeroCuenta(@PathVariable("numeroCuenta") String numeroCuenta){
 		Map<String, Object> response = new HashMap<>();
-		logger.info("CUENTA : "+numeroCuenta);
 		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
-		
-		logger.info("CUENTA : "+cuentaObj);
 		
 		if(cuentaObj == null) {
 			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
@@ -58,26 +54,6 @@ public class CuentaPeigoController {
 		response.put("cuenta", cuentaObj);
 		
 		return cuentaObj;
-	}
-	
-	
-	@GetMapping("/cuentas/{numeroCuenta}")
-	public ResponseEntity<?> consultarNumeroCuenta(@PathVariable("numeroCuenta") String numeroCuenta){
-		Map<String, Object> response = new HashMap<>();
-		logger.info("CUENTA : "+numeroCuenta);
-		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
-		
-		logger.info("CUENTA : "+cuentaObj);
-		
-		if(cuentaObj == null) {
-			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
-			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.NOT_FOUND);
-		}
-		
-		response.put("mensaje", "Consulta realizada con exito.");
-		response.put("cuenta", cuentaObj);
-		
-		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
 	}
 	
 	@PostMapping("/cuentas")
@@ -105,46 +81,7 @@ public class CuentaPeigoController {
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
 	}
 	
-	@PutMapping("/cuentas/{numeroCuenta}")
-	public ResponseEntity<?> actualizarCuenta(@Valid @RequestBody CuentaPeigo cuenta, BindingResult result, @PathVariable String numeroCuenta){
-		CuentaPeigo cuentaFinal = null;
-		Map<String, Object> response = new HashMap<>();
-		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
-		
-		if(result.hasErrors()) {
-			List<String> resultError = result.getFieldErrors().stream().map(r-> "El campo '"+r.getField()+"' "+r.getDefaultMessage()).collect(Collectors.toList());
-			response.put("erros", resultError);
-			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.BAD_REQUEST);
-		}
-		
-		if(cuentaObj == null) {
-			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
-			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.NOT_FOUND);
-		}
-		
-		try {
-			
-			cuentaObj.setNumeroCuenta(cuenta.getNumeroCuenta());
-			cuentaObj.setCliente(cuenta.getCliente());
-			cuentaObj.setTipoCuenta(cuenta.getTipoCuenta());
-			cuentaObj.setSaldo(cuenta.getSaldo());
-			cuentaObj.setEstado(cuenta.getEstado());
-				
-			cuentaFinal = service.save(cuentaObj);
-			
-		} catch (DataAccessException e) {
-			response.put("error", e.getMostSpecificCause().getMessage());
-			response.put("mensaje", "Se produjo un error en la aplicacion");
-			return new ResponseEntity<Map<String, Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		response.put("mensaje", "Cliente actualizado con exito.");
-		response.put("cuenta", cuentaFinal);
-		
-		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
-	}
-	
-	@PostMapping("/cuentas2/{numeroCuenta}")
+	@PostMapping("/cuentas/{numeroCuenta}")
 	public MensajeRespuesta actualizarCuenta2(@Valid @RequestBody CuentaPeigo cuenta, BindingResult result, @PathVariable String numeroCuenta){
 		CuentaPeigo cuentaFinal = null;
 		MensajeRespuesta respuesta = new MensajeRespuesta();
