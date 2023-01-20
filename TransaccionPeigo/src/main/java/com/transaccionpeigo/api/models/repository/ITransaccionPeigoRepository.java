@@ -4,6 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.transaccionpeigo.api.models.entity.TransaccionPeigo;
 
-public interface ITransaccionPeigoRepository extends PagingAndSortingRepository<TransaccionPeigo, Long>{
+
+public interface ITransaccionPeigoRepository extends PagingAndSortingRepository<TransaccionPeigo, String> {
 
 }

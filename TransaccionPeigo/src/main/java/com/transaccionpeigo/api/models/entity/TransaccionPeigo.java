@@ -31,12 +31,12 @@ public class TransaccionPeigo implements Serializable{
 	
 	@Pattern(regexp = "[0-9]+",message = "Solo permite valores numericos")
 	@NotEmpty(message = "El campo no puede ser vacio")
-	@Column(unique=true, name="cuentaOrigen")
+	@Column(name="cuentaOrigen")
 	private String cuentaOrigen;
 	
 	@Pattern(regexp = "[0-9]+",message = "Solo permite valores numericos")
 	@NotEmpty(message = "El campo no puede ser vacio")
-	@Column(unique=true, name="cuentaDestino")
+	@Column(name="cuentaDestino")
 	private String cuentaDestino;
 	
 	@Column(name = "monto")

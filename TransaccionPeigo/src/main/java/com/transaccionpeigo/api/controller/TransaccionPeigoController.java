@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.transaccionpeigo.api.models.entity.MensajeRespuesta;
 import com.transaccionpeigo.api.models.entity.TransaccionPeigo;
 import com.transaccionpeigo.api.models.service.ITransaccionPeigoService;
 
@@ -57,4 +58,36 @@ public class TransaccionPeigoController {
 		
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
 	}
+	
+	
+	@PostMapping("/transacciones2")
+	public MensajeRespuesta guardarTransaccion(@Valid @RequestBody TransaccionPeigo transacciones, BindingResult result){
+		TransaccionPeigo transaccionesObj = null;
+		MensajeRespuesta respuesta = new MensajeRespuesta();
+		Map<String, Object> response = new HashMap<>();
+		
+		if(result.hasErrors()) {
+			List<String> resultError = result.getFieldErrors().stream().map(r-> "El campo '"+r.getField()+"' "+r.getDefaultMessage()).collect(Collectors.toList());
+			//response.put("error", resultError);
+			respuesta.setMensaje("error : " + resultError);
+			return respuesta;
+		}
+		
+		try {
+			transaccionesObj = service.save(transacciones);
+		} catch (DataAccessException e) {
+			//response.put("error", e.getMostSpecificCause().getMessage());
+			//response.put("mensaje", "Se produjo un error en la aplicacion");
+			respuesta.setMensaje("Se produjo un error en la aplicacion");
+			return respuesta;
+		}
+		
+		//response.put("mensaje", "Transaccion creada con exito.");
+		//response.put("transaccion", transaccionesObj);
+		respuesta.setMensaje("Transaccion creada con exito.");
+		respuesta.setTransaccion(transaccionesObj);
+		
+		return respuesta;
+	}
+	
 }

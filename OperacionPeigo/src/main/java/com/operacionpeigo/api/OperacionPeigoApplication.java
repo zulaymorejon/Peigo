@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+
 @SpringBootApplication
+@OpenAPIDefinition
 public class OperacionPeigoApplication {
 
 	public static void main(String[] args) {

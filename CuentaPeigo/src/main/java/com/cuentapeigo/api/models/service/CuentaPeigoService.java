@@ -33,12 +33,6 @@ public class CuentaPeigoService implements ICuentaPeigoService{
 	public CuentaPeigo save(CuentaPeigo cuentaPeigo) {
 		return repository.save(cuentaPeigo);
 	}
-	
-	/*@Override
-	@Transactional
-	public CuentaPeigo findByCuenta(String cuenta) {
-		return repository.findByNumeroCuenta(cuenta);
-	}*/
 
 	@Override
 	@Transactional

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cuentapeigo.api.models.entity.CuentaPeigo;
+import com.cuentapeigo.api.models.entity.MensajeRespuesta;
 import com.cuentapeigo.api.models.service.ICuentaPeigoService;
 
 @RestController
 @RequestMapping("/api")
 public class CuentaPeigoController {
+	
+	public static final Logger logger = LoggerFactory.getLogger(CuentaPeigoController.class);
 	
 	@Autowired
 	private ICuentaPeigoService service;
@@ -36,10 +41,33 @@ public class CuentaPeigoController {
 		return service.findAll();
 	}
 	
+	@GetMapping("/cuentas2/{numeroCuenta}")
+	public CuentaPeigo consultarNumeroCuenta2(@PathVariable("numeroCuenta") String numeroCuenta){
+		Map<String, Object> response = new HashMap<>();
+		logger.info("CUENTA : "+numeroCuenta);
+		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
+		
+		logger.info("CUENTA : "+cuentaObj);
+		
+		if(cuentaObj == null) {
+			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
+			return null;
+		}
+		
+		response.put("mensaje", "Consulta realizada con exito.");
+		response.put("cuenta", cuentaObj);
+		
+		return cuentaObj;
+	}
+	
+	
 	@GetMapping("/cuentas/{numeroCuenta}")
 	public ResponseEntity<?> consultarNumeroCuenta(@PathVariable("numeroCuenta") String numeroCuenta){
 		Map<String, Object> response = new HashMap<>();
+		logger.info("CUENTA : "+numeroCuenta);
 		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
+		
+		logger.info("CUENTA : "+cuentaObj);
 		
 		if(cuentaObj == null) {
 			response.put("mensaje", "No existe la cuenta con el numero " + numeroCuenta);
@@ -114,6 +142,45 @@ public class CuentaPeigoController {
 		response.put("cuenta", cuentaFinal);
 		
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
+	}
+	
+	@PostMapping("/cuentas2/{numeroCuenta}")
+	public MensajeRespuesta actualizarCuenta2(@Valid @RequestBody CuentaPeigo cuenta, BindingResult result, @PathVariable String numeroCuenta){
+		CuentaPeigo cuentaFinal = null;
+		MensajeRespuesta respuesta = new MensajeRespuesta();
+		
+		CuentaPeigo cuentaObj = service.findById(numeroCuenta);
+		
+		if(result.hasErrors()) {
+			List<String> resultError = result.getFieldErrors().stream().map(r-> "El campo '"+r.getField()+"' "+r.getDefaultMessage()).collect(Collectors.toList());
+			respuesta.setMensaje("erros : "+ resultError);
+			return respuesta;
+		}
+		
+		if(cuentaObj == null) {
+			respuesta.setMensaje("No existe la cuenta con el numero " + numeroCuenta);
+			return respuesta;
+		}
+		
+		try {
+			
+			cuentaObj.setNumeroCuenta(cuenta.getNumeroCuenta());
+			cuentaObj.setCliente(cuenta.getCliente());
+			cuentaObj.setTipoCuenta(cuenta.getTipoCuenta());
+			cuentaObj.setSaldo(cuenta.getSaldo());
+			cuentaObj.setEstado(cuenta.getEstado());
+				
+			cuentaFinal = service.save(cuentaObj);
+			
+		} catch (DataAccessException e) {
+			respuesta.setMensaje("Se produjo un error en la aplicacion");
+			return respuesta;
+		}
+		
+		respuesta.setMensaje("Cliente actualizado con exito.");
+		respuesta.setCuenta(cuentaFinal);
+		
+		return respuesta;
 	}
 	
 	@DeleteMapping("/cuentas/{numeroCuenta}")
