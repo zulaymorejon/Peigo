@@ -51,35 +51,6 @@ public class CuentaPeigoController {
 		
 		return icuentaPeigoService.buscarCuentasConExchange();
 	}
-
-	@GetMapping(path = "/buscarPorCuenta/{numeroCuenta}")
-	public ResponseEntity<?> consultarNumeroCuenta(@PathVariable("numeroCuenta") String numeroCuenta){
-		//RestTemplate restTemplate = new RestTemplate();
-		
-		//Object cuenta = restTemplate.getForObject(url+"/"+numeroCuenta, Object.class);
-		
-		Map<String, Object> response = new HashMap<>();
-		CuentaPeigo cuenta2 = new CuentaPeigo();
-		
-		CuentaPeigo cuenta = icuentaPeigoService.consultarNumeroCuenta(numeroCuenta);
-		
-		response.put("mensaje", "Consulta realizada con exito.");
-		response.put("cuenta", cuenta);
-		
-		logger.info("prueba cast: ", cuenta);
-		//logger.info("prueba cast2: ", cuenta.getNumeroCuenta().toString());
-		//return cuenta;
-		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
-	}
-	
-	@PutMapping(path = "/actualizarCuenta/{numeroCuenta}")
-	public void updateEmployee(@PathVariable("numeroCuenta") String numeroCuenta) {
-        Map < String, String > params = new HashMap < String, String > ();
-        params.put("numeroCuenta", numeroCuenta);
-        CuentaPeigo updatedEmployee = new CuentaPeigo(numeroCuenta, "NuevoNombre", "aho", 20.0, "Activo");
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.put(url+"/"+numeroCuenta, updatedEmployee, params);
-    }
 	
 	@PostMapping(path = "/operacion")
 	public MensajeRespuestaOperacion operacion(@Valid @RequestBody MensajeEntradaOperacion operacion){
@@ -87,13 +58,6 @@ public class CuentaPeigoController {
 		transaccion = icuentaPeigoService.operacion(operacion);
 		logger.info("prueba operacion de la consulta"+ operacion.getCuentaDestino().toString());
 		return transaccion;
-	}
-	
-	
-	@GetMapping(path = "/hello")
-	public String holaMundo(){
-		
-		return "Hola mundo";
 	}
 	
 

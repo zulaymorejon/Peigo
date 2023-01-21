@@ -104,7 +104,7 @@ public class CuentaPeigoService implements ICuentaPeigoService{
         	transaccion.setCuentaDestino(objCtaDestino.getCuenta().getNumeroCuenta());
         	transaccion.setCuentaOrigen(objCtaOrigen.getCuenta().getNumeroCuenta());
         	transaccion.setFechaTransaccion(new Date());
-        	transaccion.setMonto(saldoDestino);
+        	transaccion.setMonto(operacion.getMonto());
         	transaccion.setUsuarioTransaccion("zmorejon");
         	
         	MensajeEntradaTransaccion objTransaccion = insertaTransaccion(transaccion);
